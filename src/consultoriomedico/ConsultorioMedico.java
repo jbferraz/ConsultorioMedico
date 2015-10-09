@@ -9,6 +9,13 @@ import repositorio.RepositorioMedicamentos;
 import repositorio.RepositorioPacientes;
 import java.text.ParseException;
 import java.util.Date;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -73,19 +80,36 @@ public class ConsultorioMedico {
         op = Console.scanInt("Escolha uma opção: ");
 
         switch (op) {
-            case 1:
-                try {
-                    String nome = Console.scanString("Nome: ");
-                    String cpf = Console.scanString("CPF: ");
-                    String dtNasc = Console.scanString("Data Nascimento (dd/mm/aaaa): ");
-                    Date dtNascDate = DateUtil.stringToDate(dtNasc);
-                    Paciente paciente = new Paciente(nome, cpf, dtNascDate);
-                    repositorioPacientes.adicionar(paciente);
-                } catch (ParseException ex) {
-                    System.out.println("Formato de data errado! Operação cancelada!");
-                }
-                break;
-            case 2:
+                case 1:
+                //try {
+                String nome = Console.scanString("Nome: ");
+                String cpf = Console.scanString("CPF: ");
+                String dtNasc = Console.scanString("Data Nascimento (dd/mm/aaaa): ");
+
+                    String sql = "insert into paciente (nome, cpf, dtnasc) values ('" + nome + "','" + cpf + "','" + dtNasc + "');";
+
+                    try {
+                        try {
+                            Class.forName("org.postgresql.Driver");
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(ConsultorioMedico.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        String url = "jdbc:postgresql://localhost:5432/ConsultorioMedico";
+                        Connection conexao = DriverManager.getConnection(url, "postgres", "jferraz");
+                        Statement comando;
+                        comando = conexao.createStatement();
+                        int linhasAfetadas = comando.executeUpdate(sql);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ConsultorioMedico.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    //Date dtNascDate = DateUtil.stringToDate(dtNasc);
+                    //Paciente paciente = new Paciente(nome, cpf, dtNascDate);
+                    /*repositorioPacientes.adicionar(paciente);
+                     } catch (ParseException ex) {
+                     System.out.println("Formato de data errado! Operação cancelada!");
+                     }*/
+                    break;
+                case 2:
                 System.out.println("\nLista de pacientes");
                 if (!repositorioPacientes.temPacientes()) {
                     System.out.println("Nenhum paciente foi cadastrado!");
