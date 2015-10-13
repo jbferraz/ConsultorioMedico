@@ -73,10 +73,12 @@ public class ConsultorioMedico {
         public static void menuCP() {
 
         int op = 0;
+            System.out.println("--Cadastro de Pacientes--");
         System.out.println("1 - Adicionar Paciente");
         System.out.println("2 - Visualizar todos Pacientes");
         System.out.println("3 - Atualizar Paciente");
-        System.out.println("4 - Voltar");
+        System.out.println("4 - Deletar Paciente");
+        System.out.println("5 - Voltar");
         op = Console.scanInt("Escolha uma opção: ");
 
         switch (op) {
@@ -110,7 +112,7 @@ public class ConsultorioMedico {
                  }*/
                 break;
             case 2:
-                System.out.println("\nLista de pacientes");
+                System.out.println("\n--Lista de pacientes--");
                 try {
 
                     Class.forName("org.postgresql.Driver");
@@ -131,11 +133,9 @@ public class ConsultorioMedico {
                             System.out.println("CPF: " + resultado.getString("cpf"));
                             System.out.println("Data Nasc.: " + resultado.getString("dtnasc"));
                             System.out.println("---------------------------------");
-                        }
-
+                            }
                         }
                     }
-
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(ConsultorioMedico.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
@@ -157,7 +157,7 @@ public class ConsultorioMedico {
                 }*/
                 break;
             case 3:
-                System.out.println("Atualizar Paciente");
+                System.out.println("--Atualizar nome do Paciente--");
                 cpf = Console.scanString("Informe o CPF: ");
                 nome=Console.scanString("Informe nome: ");
                 
@@ -182,8 +182,28 @@ public class ConsultorioMedico {
 
                 break;
             case 4:
+                System.out.println("--Deletar Paciente--");
+                cpf = Console.scanString("Informe o CPF: ");
                 
-
+                sql="delete from paciente where cpf='"+cpf+"'";
+                
+                try {
+                    try {
+                        Class.forName("org.postgresql.Driver");
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(ConsultorioMedico.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    String url = "jdbc:postgresql://localhost:5432/ConsultorioMedico";
+                    Connection conexao = DriverManager.getConnection(url, "postgres", "jferraz");
+                    Statement comando;
+                    comando = conexao.createStatement();
+                    int linhasAfetadas = comando.executeUpdate(sql);
+                    comando.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConsultorioMedico.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            case 5:
                 break;
             default:
                 throw new AssertionError();
@@ -193,6 +213,7 @@ public class ConsultorioMedico {
    
     public static void menuCM() {
         int op = 0;
+        System.out.println("--Cadastro Medicamentos--");
         System.out.println("1 - Adicionar Medicamentos");
         System.out.println("2 - Visualizar todos Medicamentos");
         System.out.println("3 - Voltar");
